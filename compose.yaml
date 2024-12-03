@@ -37,6 +37,6 @@ services:
       - MONGO_INITDB_DATABASE=chatbotdb
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      interval: 5s
+      timeout: 5s
+      retries: 3
