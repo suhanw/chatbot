@@ -11,7 +11,6 @@ app.get("/api/test", function (req: Request, res: Response) {
   res.send({ message: "Hello from the backend!" });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, function () {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT, function () {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
