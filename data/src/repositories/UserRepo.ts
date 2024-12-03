@@ -1,14 +1,19 @@
 import { User, IUser } from "../models/User";
 
-interface IUserRepo {
-  create: (data: IUser) => Promise<IUser>;
+export interface IUserRepo {
+  create: (data: IUser) => Promise<IUser | null>;
   findByEmail: (email: string) => Promise<IUser | null>;
   verifyPassword: (email: string, password: string) => Promise<boolean>;
 }
 
-export class MongoUserRepo implements IUserRepo {
+export class UserRepo implements IUserRepo {
   async create(data: IUser) {
-    return await User.create(data);
+    try {
+      return await User.create(data);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   async findByEmail(email: string) {
@@ -16,7 +21,7 @@ export class MongoUserRepo implements IUserRepo {
       return await User.findOne({ email }).exec();
     } catch (error) {
       console.error(error);
-      return null;
+      throw error;
     }
   }
 

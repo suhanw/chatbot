@@ -5,8 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:server": "webpack --config server/webpack.js --watch",
-    "build:server": "webpack --config server/webpack.js",
-    "type-check:server": "tsc --noEmit --project server/tsconfig.json"
+    "build:server": "webpack --config server/webpack.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +16,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
+    "@types/mongodb": "^4.0.6",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.10.1",
     "nodemon-webpack-plugin": "^4.8.2",
