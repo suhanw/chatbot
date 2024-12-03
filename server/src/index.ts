@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { connectDB } from "../../data/src/index";
+import { connectDB } from "../../data/src";
 
 connectDB();
 
