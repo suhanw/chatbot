@@ -1,5 +1,5 @@
 import { MongoError } from "mongodb";
-import { IUserRepo } from "../../../../data/src";
+import { IUserRepo } from "@data";
 import { Request, Response } from "express";
 
 export class AuthHandlers {

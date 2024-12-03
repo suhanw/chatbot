@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserRepo } from "../../../../data/src";
+import { UserRepo } from "@data";
 import { AuthHandlers } from "./auth.handlers";
 
 const router = Router();

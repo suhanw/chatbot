@@ -1,5 +1,6 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const NodemonPlugin = require("nodemon-webpack-plugin");
 
 const isDevelopment =
@@ -10,6 +11,9 @@ console.log({ isDevelopment });
 const config = {
   mode: isDevelopment ? "development" : "production",
   devtool: isDevelopment ? "inline-source-map" : false,
+  stats: {
+    errorDetails: isDevelopment,
+  },
   target: "node",
   externals: [nodeExternals()],
   entry: path.resolve(__dirname, "./src/index.ts"),
@@ -19,6 +23,11 @@ const config = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(__dirname, "./tsconfig.json"),
+      }),
+    ],
   },
   module: {
     rules: [

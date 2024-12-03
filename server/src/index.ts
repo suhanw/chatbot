@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { connectDB } from "../../data/src";
+import { connectDB } from "@data";
 import { authRoutes } from "./api/auth";
 
 connectDB();
