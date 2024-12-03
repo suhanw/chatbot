@@ -20,12 +20,31 @@ services:
       - ./package-lock.json:/usr/src/app/package-lock.json
       - /usr/src/app/node_modules
       - /usr/src/app/dist
-    environment:
-      NODE_ENV: development
     ports:
       - 3000:3000
+    environment:
+      NODE_ENV: development
+    depends_on:
+      data:
+        condition: service_healthy
     command: npm run dev:server
 
+  data:
+    image: mongo:latest
+    volumes:
+      - ./data/db:/data/db
+      # - ./data/src/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=chatbotdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
