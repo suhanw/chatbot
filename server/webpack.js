@@ -10,7 +10,6 @@ console.log({ isDevelopment });
 const config = {
   mode: isDevelopment ? "development" : "production",
   devtool: isDevelopment ? "inline-source-map" : false,
-  watch: isDevelopment,
   target: "node",
   externals: [nodeExternals()],
   entry: path.resolve(__dirname, "./src/index.ts"),
