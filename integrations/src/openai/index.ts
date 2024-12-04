@@ -6,11 +6,16 @@ const openai = new OpenAI();
 
 export class OpenAIClient implements GenAIClient {
   async generateResponse(messages: IMessage[]) {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
-    });
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+      });
 
-    return completion;
+      return completion;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 }

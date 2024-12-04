@@ -81,10 +81,14 @@ export class Conversations {
       const { title, messages } = req.body;
 
       const aiResponse = await aiClient.generateResponse(messages);
-      const aiMessage = aiResponse.choices?.[0]?.message;
+      const aiMessage = aiResponse?.choices?.[0]?.message;
 
       if (!aiMessage) {
-        throw { status: 500, message: "No AI message generated." };
+        throw {
+          status: 502,
+          message:
+            "Sorry! I'm feeling a bit slow today. Please try again in a minute.",
+        };
       }
 
       console.log(JSON.stringify(aiMessage, null, 2));
