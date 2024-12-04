@@ -1,9 +1,8 @@
 import { User, IUser } from "../models/User";
 
 export interface IUserRepo {
-  create: (data: IUser) => Promise<IUser | null>;
+  create: (data: IUser) => Promise<IUser>;
   findByEmail: (email: string) => Promise<IUser | null>;
-  verifyPassword: (email: string, password: string) => Promise<boolean>;
 }
 
 export class UserRepo implements IUserRepo {
@@ -13,10 +12,5 @@ export class UserRepo implements IUserRepo {
 
   async findByEmail(email: string) {
     return await User.findOne({ email }).exec();
-  }
-
-  async verifyPassword(email: string, password: string) {
-    const user = await this.findByEmail(email);
-    return user?.password === password;
   }
 }

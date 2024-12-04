@@ -19,6 +19,7 @@ services:
       NODE_ENV: development
       PORT: 3000
       MONGODB_URI: mongodb://data:27017/chatbotdb
+      COOKIE_SECRET: my-cookie-secret
     depends_on:
       data:
         condition: service_healthy
