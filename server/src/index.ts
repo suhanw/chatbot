@@ -1,6 +1,6 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { connectDB } from "@data";
-import { authRoutes } from "./api/auth";
+import { Auth } from "./plugins/auth";
 
 connectDB();
 
@@ -8,12 +8,9 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+new Auth(app);
 
-app.get("/api/test", function (req: Request, res: Response) {
-  res.send({ message: "Hello from the backend!" });
-});
-
-app.listen(process.env.PORT, function () {
-  console.log(`Server running on port ${process.env.PORT}`);
+const server = app.listen(process.env.PORT);
+server.on("listening", () => {
+  console.log("Server running on", server.address());
 });

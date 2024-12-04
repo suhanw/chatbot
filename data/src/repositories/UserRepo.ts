@@ -8,21 +8,11 @@ export interface IUserRepo {
 
 export class UserRepo implements IUserRepo {
   async create(data: IUser) {
-    try {
-      return await User.create(data);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    return await User.create(data);
   }
 
   async findByEmail(email: string) {
-    try {
-      return await User.findOne({ email }).exec();
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    return await User.findOne({ email }).exec();
   }
 
   async verifyPassword(email: string, password: string) {
