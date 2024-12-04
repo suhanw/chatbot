@@ -4,6 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "up": "docker compose up -d --no-deps --build",
+    "down": "docker compose down -v",
+    "dev:client": "webpack serve --config client/webpack.js",
     "dev:server": "webpack --config server/webpack.js --watch",
     "build:server": "webpack --config server/webpack.js"
   },
@@ -24,12 +27,17 @@
     "@types/mongodb": "^4.0.6",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.10.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "nodemon-webpack-plugin": "^4.8.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "ts-loader": "^9.5.1",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.7.2",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0",
     "webpack-node-externals": "^3.0.0"
   }
 }

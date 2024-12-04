@@ -2,6 +2,7 @@ import express from "express";
 import { connectDB } from "@data";
 import { Auth } from "./plugins/auth";
 import { Conversations } from "./plugins/conversations";
+import { SinglePageApp } from "./plugins/single-page-app";
 
 connectDB();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 new Auth(app);
 new Conversations(app);
+new SinglePageApp(app);
 
 const server = app.listen(process.env.PORT);
 server.on("listening", () => {
