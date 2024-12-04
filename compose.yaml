@@ -29,7 +29,6 @@ services:
     image: mongo:latest
     volumes:
       - ./data/db:/data/db
-      # - ./data/src/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     expose:
       - 27017
     ports:
@@ -44,6 +43,8 @@ services:
 
   cache:
     image: redis:latest
+    volumes:
+      - ./cache/db:/data
     expose:
       - 6379
     ports:
