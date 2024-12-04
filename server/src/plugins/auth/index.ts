@@ -88,6 +88,7 @@ export class Auth {
 
   handleError: ErrorRequestHandler = (err, req, res, next) => {
     console.error(err);
+    console.log("Destroying session");
     req.session.destroy(console.error);
     res.status(err.status || 500).json({ error: err.message });
   };

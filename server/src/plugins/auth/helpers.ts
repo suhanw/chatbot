@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { promisify } from "node:util";
+import { Request, Response, NextFunction } from "express";
 
 const hashPromise = promisify(crypto.pbkdf2);
 
@@ -24,4 +25,18 @@ export const matchPassword = async (
 ) => {
   const { hashedPassword } = await hashFunction(stringPassword, salt);
   return crypto.timingSafeEqual(correctPassword, hashedPassword);
+};
+
+export const requireLogin = (
+  req: Request,
+  _: Response,
+  next: NextFunction
+) => {
+  if (!req.session.user) {
+    throw {
+      status: 401,
+      message: "Your session may have expired. Please login to continue.",
+    };
+  }
+  next();
 };
