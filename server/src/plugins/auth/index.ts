@@ -5,7 +5,10 @@ import {
   RequestHandler,
 } from "express";
 import session from "express-session";
+import { RedisStore } from "connect-redis";
+
 import { IUserRepo, UserRepo } from "@data";
+import { redisClient } from "@cache";
 import { hashFunction, matchPassword } from "./helpers";
 
 declare module "express-session" {
@@ -16,10 +19,16 @@ declare module "express-session" {
 
 const userRepo: IUserRepo = new UserRepo();
 
+let store = new RedisStore({
+  client: redisClient,
+  prefix: "session:",
+});
+
 export class Auth {
   constructor(app: Application) {
     app.use(
       session({
+        store,
         secret: process.env.COOKIE_SECRET || "somesecret",
         resave: false, // https://github.com/expressjs/session?tab=readme-ov-file#resave
         saveUninitialized: false, // https://github.com/expressjs/session?tab=readme-ov-file#saveuninitialized

@@ -15,11 +15,14 @@ services:
       NODE_ENV: development
       PORT: 3000
       MONGODB_URI: mongodb://data:27017/chatbotdb
+      REDIS_URI: redis://cache:6379
       COOKIE_SECRET: my-cookie-secret
       OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
       data:
         condition: service_healthy
+      cache:
+        condition: service_started
     command: npm run dev:server
 
   data:
@@ -38,3 +41,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 3
+
+  cache:
+    image: redis:latest
+    expose:
+      - 6379
+    ports:
+      - 6379:6379

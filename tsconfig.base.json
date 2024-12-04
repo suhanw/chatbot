@@ -4,7 +4,8 @@
     "rootDir": ".",
     "paths": {
       "@data": ["data/src/index.ts"],
-      "@integrations": ["integrations/src/index.ts"]
+      "@integrations": ["integrations/src/index.ts"],
+      "@cache": ["cache/src/index.ts"]
     }
   },
   "include": ["./**/*.ts"],

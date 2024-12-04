@@ -11,10 +11,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "connect-redis": "^8.0.0",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "mongoose": "^8.8.3",
-    "openai": "^4.75.0"
+    "openai": "^4.75.0",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
