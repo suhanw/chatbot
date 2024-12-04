@@ -6,11 +6,7 @@ services:
       # For development, use the dependencies stage
       target: dependencies
     volumes:
-      - ./server:/usr/src/app/server
-      - ./data:/usr/src/app/data
-      - ./services:/usr/src/app/services
-      - ./package.json:/usr/src/app/package.json
-      - ./package-lock.json:/usr/src/app/package-lock.json
+      - ./:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/dist
     ports:
@@ -20,6 +16,7 @@ services:
       PORT: 3000
       MONGODB_URI: mongodb://data:27017/chatbotdb
       COOKIE_SECRET: my-cookie-secret
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
       data:
         condition: service_healthy

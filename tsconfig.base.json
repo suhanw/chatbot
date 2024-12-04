@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "@data": ["data/src/index.ts"]
+      "@data": ["data/src/index.ts"],
+      "@integrations": ["integrations/src/index.ts"]
     }
   },
   "include": ["./**/*.ts"],

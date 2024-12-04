@@ -4,10 +4,12 @@ import {
   RequestHandler,
   ErrorRequestHandler,
 } from "express";
-import { IConversationRepo, ConversationRepo } from "@data";
 import { requireLogin } from "../auth/helpers";
+import { IConversationRepo, ConversationRepo } from "@data";
+import { GenAIClient, OpenAIClient } from "@integrations";
 
 const conversationRepo: IConversationRepo = new ConversationRepo();
+const aiClient: GenAIClient = new OpenAIClient();
 
 export class Conversations {
   constructor(app: Application) {
@@ -78,11 +80,26 @@ export class Conversations {
       const { conversationId } = req.params;
       const { title, messages } = req.body;
 
+      const aiResponse = await aiClient.generateResponse(messages);
+      const aiMessage = aiResponse.choices?.[0]?.message;
+
+      if (!aiMessage) {
+        throw { status: 500, message: "No AI message generated." };
+      }
+
+      console.log(JSON.stringify(aiMessage, null, 2));
+
       const conversation = await conversationRepo.update({
         _id: conversationId,
         user: userId,
         title,
-        messages,
+        messages: [
+          ...messages,
+          {
+            role: aiMessage.role,
+            content: aiMessage.content,
+          },
+        ],
       });
 
       if (!conversation) {
