@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { createSlice } from "@reduxjs/toolkit";
 import { getCurrentUserApi, loginApi, signupApi } from "../../api/auth";
 
-interface IAuthSliceState {
+interface IAuthState {
   currentUser: { email: string; password: string } | null;
   error: string | null;
 }
 
-const initialState: IAuthSliceState = { currentUser: null, error: null };
+const initialState: IAuthState = { currentUser: null, error: null };
 
 const authSlice = createSlice({
   name: "auth",
