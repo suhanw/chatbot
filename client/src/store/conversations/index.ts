@@ -46,16 +46,13 @@ const conversationsSlice = createSlice({
     getCurrentConversationSuccess: (state, action) => {
       state.currentConversation = action.payload;
     },
-    clearCurrentConversation: (state) => {
-      state.currentConversation = null;
-    },
   },
   extraReducers(builder) {
     builder.addCase(getCurrentUserSuccess, (state, action) => {
       // clear conversations if current user is null
       if (!action.payload) {
         state.list = [];
-        state.currentConversation = null;
+        state.currentConversation = initialState.currentConversation;
       }
     });
   },
@@ -65,7 +62,6 @@ export const {
   getConversationsSuccess,
   clearConversations,
   getCurrentConversationSuccess,
-  clearCurrentConversation,
   setCurrentConversationId,
 } = conversationsSlice.actions;
 

@@ -16,7 +16,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import Box from "@mui/material/Box";
 
-import { useGetCurrentUser, useLogin, useSignup } from "../../store/auth";
+import { useGetCurrentUser } from "../../store/auth";
+import useAuthForm from "./useAuthForm";
 
 function AuthDialog() {
   const { isLoggedIn } = useGetCurrentUser();
@@ -139,53 +140,16 @@ function PasswordField({
 }
 
 function AuthDialogForm({ loginView }: { loginView: boolean }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordValidationError, setPasswordValidationError] = useState("");
-  const { login, error: loginError, clearError: clearLoginError } = useLogin();
   const {
-    signup,
-    error: signupError,
-    clearError: clearSignupError,
-  } = useSignup();
-
-  const error = loginError || signupError || passwordValidationError;
-
-  const clearError = () => {
-    setPasswordValidationError("");
-    clearLoginError();
-    clearSignupError();
-  };
-
-  const isValidPassword = () => {
-    if (password.length < 8) {
-      setPasswordValidationError(
-        "Password must be at least 8 characters long."
-      );
-      return false;
-    }
-    if (password !== confirmPassword) {
-      setPasswordValidationError("Passwords do not match.");
-      return false;
-    }
-    return true;
-  };
-
-  const handleContinue = (e: SyntheticEvent) => {
-    e.preventDefault();
-    clearError();
-    if (loginView) {
-      login(email, password);
-    } else if (isValidPassword()) {
-      signup(email, password);
-    }
-  };
-
-  useEffect(() => {
-    clearError();
-  }, [loginView]);
-
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    handleContinue,
+    error,
+  } = useAuthForm(loginView);
   return (
     <form
       style={{ display: "flex", flexDirection: "column" }}
