@@ -1,58 +1,72 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
+import FormHelperText from "@mui/material/FormHelperText";
 import SendIcon from "@mui/icons-material/Send";
+import { useUpdateConversation } from "client/src/store/conversations";
 
 function ConversationInput() {
   const theme = useTheme();
-  const [message, setMessage] = useState("");
+  const [content, setContent] = useState("");
+  const { updateConversation, error, clearError } = useUpdateConversation();
 
-  const sendMessage = () => {
-    console.log({ message });
+  const sendMessage = (e: SyntheticEvent) => {
+    e.preventDefault();
+    if (content) {
+      updateConversation(content);
+      setContent("");
+      clearError();
+    }
   };
+
   return (
-    <FormControl
-      sx={{
-        marginBottom: "20px",
-        display: "flex",
-        flexDirection: "column",
-        "& textarea:focus-visible": {
-          outline: "none",
-        },
-      }}
-    >
-      <TextareaAutosize
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        aria-label="Message chatbot"
-        placeholder="Message chatbot"
-        maxRows={3}
-        style={{
-          resize: "none",
-          width: "100%",
-          padding: "20px",
-          borderRadius: "20px 20px 0 0",
-          border: 0,
-          background: theme.palette.grey[100],
-        }}
-      />
-      <Box
+    <form onSubmit={sendMessage}>
+      <FormHelperText error={!!error} sx={{ textAlign: "center" }}>
+        {error}
+      </FormHelperText>
+      <FormControl
         sx={{
+          marginBottom: "20px",
           display: "flex",
-          justifyContent: "flex-end",
-          background: theme.palette.grey[100],
-          borderRadius: "0 0 20px 20px",
-          padding: "10px",
+          flexDirection: "column",
+          "& textarea:focus-visible": {
+            outline: "none",
+          },
         }}
       >
-        <IconButton onClick={sendMessage}>
-          <SendIcon />
-        </IconButton>
-      </Box>
-    </FormControl>
+        <TextareaAutosize
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          aria-label="Message chatbot"
+          placeholder="Message chatbot"
+          maxRows={3}
+          style={{
+            resize: "none",
+            width: "100%",
+            padding: "20px",
+            borderRadius: "20px 20px 0 0",
+            border: 0,
+            background: theme.palette.grey[100],
+          }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            background: theme.palette.grey[100],
+            borderRadius: "0 0 20px 20px",
+            padding: "10px",
+          }}
+        >
+          <IconButton type="submit">
+            <SendIcon />
+          </IconButton>
+        </Box>
+      </FormControl>
+    </form>
   );
 }
 

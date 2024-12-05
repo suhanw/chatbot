@@ -31,11 +31,32 @@ export class Conversations {
       const { id: userId } = req.session.user || {};
       const { messages, title } = req.body;
 
+      const aiResponse = await aiClient.generateResponse(messages);
+      const aiMessage = aiResponse?.choices?.[0]?.message;
+
+      if (!aiMessage) {
+        throw {
+          status: 502,
+          message:
+            "Sorry! I'm feeling a bit slow today. Please try again in a minute.",
+        };
+      }
+
       const conversation = await conversationRepo.create({
         title,
-        messages,
+        messages: [
+          ...messages,
+          {
+            role: aiMessage.role,
+            content: aiMessage.content,
+          },
+        ],
         user: userId,
       });
+
+      if (!conversation) {
+        throw { status: 422, message: "Conversation not created." };
+      }
 
       res.json({ data: conversation });
     } catch (err) {
@@ -91,8 +112,6 @@ export class Conversations {
         };
       }
 
-      console.log(JSON.stringify(aiMessage, null, 2));
-
       const conversation = await conversationRepo.update({
         _id: conversationId,
         user: userId,
@@ -116,7 +135,7 @@ export class Conversations {
     }
   };
 
-  handleError: ErrorRequestHandler = (err, _, res) => {
+  handleError: ErrorRequestHandler = (err, req, res, next) => {
     console.error(err);
     res.status(err.status || 500).send(err.message);
   };

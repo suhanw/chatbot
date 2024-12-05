@@ -1,8 +1,11 @@
+import IconButton from "@mui/material/IconButton";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 
 import { TOP_NAV_HEIGHT } from "../layout/TopNav";
+import { useAddNewConversation } from "client/src/store/conversations";
 
 function ConversationToolbar() {
+  const { addNewConversation } = useAddNewConversation();
   return (
     <div
       style={{
@@ -13,7 +16,9 @@ function ConversationToolbar() {
         justifyContent: "flex-end",
       }}
     >
-      <AddCommentIcon fontSize="medium" sx={{ transform: "scaleX(-1)" }} />
+      <IconButton onClick={addNewConversation} sx={{ padding: 0 }}>
+        <AddCommentIcon fontSize="medium" sx={{ transform: "scaleX(-1)" }} />
+      </IconButton>
     </div>
   );
 }

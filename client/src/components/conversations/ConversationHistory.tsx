@@ -1,16 +1,24 @@
-import { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { Fragment, useRef, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
+
 import { useGetCurrentConversation } from "client/src/store/conversations";
 
 function ConversationHistory() {
   const theme = useTheme();
   const { currentConversation } = useGetCurrentConversation();
+  const latestMessageRef = useRef<HTMLDivElement>(null);
+  const scrollToLatestMessage = () => {
+    latestMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  if (!currentConversation) {
+  useEffect(() => {
+    scrollToLatestMessage();
+  }, [currentConversation?.messages?.length]);
+
+  if (!currentConversation?._id) {
     return (
       <Box sx={{ padding: "20px 0" }}>
         <Typography variant="h3" textAlign="center">
@@ -65,6 +73,7 @@ function ConversationHistory() {
           )}
         </Fragment>
       ))}
+      <div ref={latestMessageRef} />
     </Box>
   );
 }
