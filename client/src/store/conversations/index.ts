@@ -159,11 +159,24 @@ export const useUpdateConversation = () => {
   );
   const dispatch = useDispatch();
   const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const updateConversation = async (content: any) => {
+    const oldConversation = { ...currentConversation };
+    setIsLoading(true);
+
     try {
       let response;
       const message = { role: "user", content };
+
+      // Optimistic UI update
+      dispatch(
+        getCurrentConversationSuccess({
+          ...currentConversation,
+          messages: [...currentConversation?.messages, message],
+        })
+      );
+
       if (currentConversation?._id) {
         response = await putConversationByIdApi(currentConversation._id, {
           ...currentConversation,
@@ -180,6 +193,9 @@ export const useUpdateConversation = () => {
       dispatch(getCurrentConversationSuccess(response.data));
     } catch (err) {
       setError(err);
+      dispatch(getCurrentConversationSuccess(oldConversation));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -187,5 +203,5 @@ export const useUpdateConversation = () => {
     setError(null);
   };
 
-  return { updateConversation, error, clearError };
+  return { updateConversation, error, clearError, isLoading };
 };

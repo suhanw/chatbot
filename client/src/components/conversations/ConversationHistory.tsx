@@ -18,7 +18,7 @@ function ConversationHistory() {
     scrollToLatestMessage();
   }, [currentConversation?.messages?.length]);
 
-  if (!currentConversation?._id) {
+  if (!currentConversation?.messages?.length) {
     return (
       <Box sx={{ padding: "20px 0" }}>
         <Typography variant="h3" textAlign="center">

@@ -5,13 +5,16 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
 import FormHelperText from "@mui/material/FormHelperText";
+import LinearProgress from "@mui/material/LinearProgress";
 import SendIcon from "@mui/icons-material/Send";
+
 import { useUpdateConversation } from "client/src/store/conversations";
 
 function ConversationInput() {
   const theme = useTheme();
   const [content, setContent] = useState("");
-  const { updateConversation, error, clearError } = useUpdateConversation();
+  const { updateConversation, error, clearError, isLoading } =
+    useUpdateConversation();
 
   const sendMessage = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -24,6 +27,7 @@ function ConversationInput() {
 
   return (
     <form onSubmit={sendMessage}>
+      {isLoading && <LinearProgress />}
       <FormHelperText error={!!error} sx={{ textAlign: "center" }}>
         {error}
       </FormHelperText>
