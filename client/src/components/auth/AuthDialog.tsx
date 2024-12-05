@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -14,21 +14,28 @@ import InputLabel from "@mui/material/InputLabel";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
+import Box from "@mui/material/Box";
 
-import { useLogin } from "../../store/auth";
+import { useLogin, useSignup } from "../../store/auth";
 
 function AuthDialog() {
-  const theme = useTheme();
   const [loginView, setLoginView] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { login, error } = useLogin();
-  const handleLogin = () => login(email, password);
 
   return (
     <Dialog open fullWidth maxWidth="xs">
+      <AuthDialogHeader loginView={loginView} />
+      <DialogContent>
+        <AuthDialogForm loginView={loginView} />
+        <AuthDialogSwitcher loginView={loginView} setLoginView={setLoginView} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function AuthDialogHeader({ loginView }: { loginView: boolean }) {
+  const theme = useTheme();
+  return (
+    <>
       <SmartToyIcon
         fontSize="large"
         sx={{
@@ -46,94 +53,166 @@ function AuthDialog() {
       ) : (
         <DialogTitle textAlign="center">Create an account</DialogTitle>
       )}
+    </>
+  );
+}
 
-      <DialogContent
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <TextField
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          label="Email"
-          variant="outlined"
-          required
-          sx={{ marginTop: "10px" }}
+function AuthDialogSwitcher({
+  loginView,
+  setLoginView,
+}: {
+  loginView: boolean;
+  setLoginView: (loginView: boolean) => void;
+}) {
+  return (
+    <Box
+      sx={{
+        marginTop: "10px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end",
+        "& .MuiButton-root": {
+          margin: 0,
+          padding: 0,
+          fontSize: "inherit",
+          textTransform: "none",
+        },
+      }}
+    >
+      {loginView ? (
+        <>
+          <span>Don't have an account?</span>
+          <Button onClick={() => setLoginView(false)} variant="text">
+            Sign up
+          </Button>
+        </>
+      ) : (
+        <>
+          <span>Already have an account?</span>
+          <Button onClick={() => setLoginView(true)} variant="text">
+            Log in
+          </Button>
+        </>
+      )}
+    </Box>
+  );
+}
+
+function PasswordField({
+  label = "Password",
+  password,
+  setPassword,
+}: {
+  label?: string;
+  password: string;
+  setPassword: (password: string) => void;
+}) {
+  const [showPassword, setShowPassword] = useState(false);
+  return (
+    <FormControl variant="outlined" required sx={{ marginTop: "10px" }}>
+      <InputLabel htmlFor={label} sx={{ background: "#fff" }}>
+        {label}
+      </InputLabel>
+      <OutlinedInput
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        id={label}
+        type={showPassword ? "text" : "password"}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label={
+                showPassword ? "hide the password" : "display the password"
+              }
+              onClick={() => setShowPassword((show) => !show)}
+              edge="end"
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        }
+      />
+    </FormControl>
+  );
+}
+
+function AuthDialogForm({ loginView }: { loginView: boolean }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordValidationError, setPasswordValidationError] = useState("");
+
+  const isValidPassword = () => {
+    if (password.length < 8) {
+      setPasswordValidationError(
+        "Password must be at least 8 characters long."
+      );
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setPasswordValidationError("Passwords do not match.");
+      return false;
+    }
+    return true;
+  };
+
+  const { login, error: loginError, clearLoginError } = useLogin();
+  const { signup, error: signupError, clearSignupError } = useSignup();
+  const clearError = () => {
+    setPasswordValidationError("");
+    loginView ? clearLoginError() : clearSignupError();
+  };
+
+  const error = loginError || signupError || passwordValidationError;
+
+  const handleContinue = (e: SyntheticEvent) => {
+    e.preventDefault();
+    clearError();
+    if (loginView) {
+      login(email, password);
+    } else if (isValidPassword()) {
+      signup(email, password);
+    }
+  };
+
+  return (
+    <form
+      style={{ display: "flex", flexDirection: "column" }}
+      onSubmit={handleContinue}
+    >
+      <TextField
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        label="Email"
+        variant="outlined"
+        required
+        type="email"
+        sx={{ marginTop: "10px" }}
+      />
+
+      <PasswordField password={password} setPassword={setPassword} />
+
+      {!loginView && (
+        <PasswordField
+          label="Confirm password"
+          password={confirmPassword}
+          setPassword={setConfirmPassword}
         />
-        <FormControl variant="outlined" required sx={{ marginTop: "10px" }}>
-          <InputLabel htmlFor="password" sx={{ background: "#fff" }}>
-            Password
-          </InputLabel>
-          <OutlinedInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            id="password"
-            type={showPassword ? "text" : "password"}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label={
-                    showPassword ? "hide the password" : "display the password"
-                  }
-                  onClick={handleClickShowPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        <FormHelperText
-          error={!!error}
-          sx={{
-            textAlign: "center",
-          }}
-        >
-          {error}
-        </FormHelperText>
-        <Button
-          variant="contained"
-          size="large"
-          sx={{ marginTop: "10px" }}
-          onClick={handleLogin}
-        >
-          Continue
-        </Button>
+      )}
 
-        <FormHelperText
-          sx={{
-            marginTop: "10px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-end",
-            "& .MuiButton-root": {
-              margin: 0,
-              padding: 0,
-              fontSize: "inherit",
-              textTransform: "none",
-            },
-          }}
-        >
-          {loginView ? (
-            <>
-              <span>Don't have an account?</span>
-              <Button onClick={() => setLoginView(false)} variant="text">
-                Sign up
-              </Button>
-            </>
-          ) : (
-            <>
-              <span>Already have an account?</span>
-              <Button onClick={() => setLoginView(true)} variant="text">
-                Log in
-              </Button>
-            </>
-          )}
-        </FormHelperText>
-      </DialogContent>
-    </Dialog>
+      <FormHelperText error={!!error} sx={{ textAlign: "center" }}>
+        {error}
+      </FormHelperText>
+
+      <Button
+        variant="contained"
+        size="large"
+        sx={{ marginTop: "10px" }}
+        type="submit"
+      >
+        Continue
+      </Button>
+    </form>
   );
 }
 

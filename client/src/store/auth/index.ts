@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSlice } from "@reduxjs/toolkit";
-import { getCurrentUserApi, loginApi } from "../../api/auth";
+import { getCurrentUserApi, loginApi, signupApi } from "../../api/auth";
 
 interface IAuthSliceState {
   currentUser: { email: string; password: string } | null;
@@ -17,14 +17,18 @@ const authSlice = createSlice({
     getCurrentUserSuccess: (state, action) => {
       state.currentUser = action.payload;
     },
-    getCurrentUserError: (state, action) => {
+    getAuthError: (state, action) => {
       state.currentUser = null;
       state.error = action.payload;
+    },
+    clearAuthError: (state) => {
+      state.error = null;
     },
   },
 });
 
-export const { getCurrentUserSuccess, getCurrentUserError } = authSlice.actions;
+export const { getCurrentUserSuccess, getAuthError, clearAuthError } =
+  authSlice.actions;
 export const authReducer = authSlice.reducer;
 
 export function useCurrentUser() {
@@ -34,7 +38,7 @@ export function useCurrentUser() {
   useEffect(() => {
     getCurrentUserApi()
       .then((response) => dispatch(getCurrentUserSuccess(response.data)))
-      .catch((error) => dispatch(getCurrentUserError(error)));
+      .catch((error) => dispatch(getAuthError(error)));
   }, []);
 
   return currentUser;
@@ -47,8 +51,29 @@ export function useLogin() {
   const login = (email: string, password: string) => {
     loginApi(email, password)
       .then((response) => dispatch(getCurrentUserSuccess(response.data)))
-      .catch((error) => dispatch(getCurrentUserError(error)));
+      .catch((error) => dispatch(getAuthError(error)));
   };
 
-  return { login, error };
+  const clearLoginError = () => {
+    dispatch(clearAuthError());
+  };
+
+  return { login, error, clearLoginError };
+}
+
+export function useSignup() {
+  const dispatch = useDispatch();
+  const { error } = useSelector((state: any) => state.data.auth);
+
+  const signup = (email: string, password: string) => {
+    signupApi(email, password)
+      .then((response) => dispatch(getCurrentUserSuccess(response.data)))
+      .catch((error) => dispatch(getAuthError(error)));
+  };
+
+  const clearSignupError = () => {
+    dispatch(clearAuthError());
+  };
+
+  return { signup, error, clearSignupError };
 }

@@ -55,7 +55,7 @@ export class Auth {
   }
 
   signup: RequestHandler = async (req, res, next) => {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
     try {
       let user = await userRepo.findByEmail(email);
       if (user) {
@@ -63,9 +63,9 @@ export class Auth {
       }
 
       const { hashedPassword, salt } = await hashFunction(password);
-      user = await userRepo.create({ name, email, hashedPassword, salt });
+      user = await userRepo.create({ email, hashedPassword, salt });
 
-      req.session.user = { id: user._id, email: user.email, name: user.name };
+      req.session.user = { id: user._id, email: user.email };
       res.json({ data: req.session.user });
     } catch (err) {
       next(err);
@@ -84,7 +84,7 @@ export class Auth {
         throw { status: 401, message: "Incorrect email or password." };
       }
 
-      req.session.user = { id: user._id, email: user.email, name: user.name };
+      req.session.user = { id: user._id, email: user.email };
       res.json({ data: req.session.user });
     } catch (err) {
       next(err);
