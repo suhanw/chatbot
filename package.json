@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "up": "docker compose up -d --no-deps --build",
-    "down": "docker compose down -v",
+    "start": "docker compose up -d --no-deps --build",
+    "stop": "docker compose down -v",
     "dev:client": "webpack serve --config client/webpack.js",
     "dev:server": "webpack --config server/webpack.js --watch",
     "build:server": "webpack --config server/webpack.js"

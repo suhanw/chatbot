@@ -1,9 +1,9 @@
 # Local development
 
-1. Start services:
+1. Build and start Docker containers:
 
 ```
-docker compose up --build
+npm start
 ```
 
 2. Monitor logs:
@@ -12,12 +12,11 @@ docker compose up --build
 docker compose logs -f
 ```
 
-3. Stop services:
+3. Tear down Docker containers:
 
 ```
-docker compose down
+npm stop
 ```
-
 
 # Build and deploy
 
