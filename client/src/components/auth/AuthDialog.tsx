@@ -143,8 +143,12 @@ function AuthDialogForm({ loginView }: { loginView: boolean }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordValidationError, setPasswordValidationError] = useState("");
-  const { login, error: loginError, clearLoginError } = useLogin();
-  const { signup, error: signupError, clearSignupError } = useSignup();
+  const { login, error: loginError, clearError: clearLoginError } = useLogin();
+  const {
+    signup,
+    error: signupError,
+    clearError: clearSignupError,
+  } = useSignup();
 
   const error = loginError || signupError || passwordValidationError;
 

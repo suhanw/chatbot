@@ -61,11 +61,11 @@ export function useLogin() {
       });
   };
 
-  const clearLoginError = () => {
+  const clearError = () => {
     setError(null);
   };
 
-  return { login, error, clearLoginError };
+  return { login, error, clearError };
 }
 
 export function useSignup() {
@@ -81,11 +81,11 @@ export function useSignup() {
       });
   };
 
-  const clearSignupError = () => {
+  const clearError = () => {
     setError(null);
   };
 
-  return { signup, error, clearSignupError };
+  return { signup, error, clearError };
 }
 
 export function useCurrentUser() {
