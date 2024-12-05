@@ -19,7 +19,7 @@ export class ConversationRepo implements IConversationRepo {
     return await Conversation.findOneAndUpdate(
       { _id: conversation._id },
       conversation,
-      { new: true }
+      { new: true } // return the updated conversation
     ).exec();
   }
 
@@ -31,6 +31,10 @@ export class ConversationRepo implements IConversationRepo {
   }
 
   async findByUser(userId: string) {
-    return await Conversation.find({ user: userId }).select("_id").exec();
+    return await Conversation.find(
+      { user: userId },
+      ["_id", "title", "updatedAt"],
+      { sort: { updatedAt: -1 } } // most recent conversations first
+    ).exec();
   }
 }

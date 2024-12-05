@@ -1,12 +1,16 @@
 import { Fragment } from "react";
+import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
+import { useGetCurrentConversation } from "client/src/store/conversations";
 
 function ConversationHistory() {
   const theme = useTheme();
-  if (false) {
+  const { currentConversation } = useGetCurrentConversation();
+
+  if (!currentConversation) {
     return (
       <Box sx={{ padding: "20px 0" }}>
         <Typography variant="h3" textAlign="center">
@@ -26,27 +30,8 @@ function ConversationHistory() {
         overflowY: "auto",
       }}
     >
-      {[
-        { id: "1", role: "user", content: "Hello there" },
-        {
-          id: "2",
-          role: "assistant",
-          content:
-            "Hi there! lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ",
-        },
-        { id: "3", role: "user", content: "How are you?" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "5", role: "assistant", content: "I'm good, thanks!" },
-        { id: "6", role: "assistant", content: "I'm good, thanks!" },
-        { id: "7", role: "assistant", content: "I'm good, thanks!" },
-        { id: "8", role: "assistant", content: "I'm good, thanks!" },
-        { id: "9", role: "assistant", content: "I'm good, thanks!" },
-        { id: "10", role: "assistant", content: "I'm good, thanks!" },
-        { id: "11", role: "assistant", content: "I'm good, thanks!" },
-        { id: "12", role: "assistant", content: "I'm good, thanks!" },
-        { id: "13", role: "assistant", content: "I'm good, thanks!" },
-      ].map(({ id, role, content }) => (
-        <Fragment key={id}>
+      {currentConversation?.messages?.map(({ _id, role, content }: any) => (
+        <Fragment key={_id}>
           {role === "user" ? (
             <Box
               sx={{

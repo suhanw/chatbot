@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -16,11 +16,13 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import Box from "@mui/material/Box";
 
-import { useLogin, useSignup } from "../../store/auth";
+import { useGetCurrentUser, useLogin, useSignup } from "../../store/auth";
 
 function AuthDialog() {
+  const { isLoggedIn } = useGetCurrentUser();
   const [loginView, setLoginView] = useState(true);
 
+  if (isLoggedIn) return null;
   return (
     <Dialog open fullWidth maxWidth="xs">
       <AuthDialogHeader loginView={loginView} />
@@ -141,6 +143,16 @@ function AuthDialogForm({ loginView }: { loginView: boolean }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordValidationError, setPasswordValidationError] = useState("");
+  const { login, error: loginError, clearLoginError } = useLogin();
+  const { signup, error: signupError, clearSignupError } = useSignup();
+
+  const error = loginError || signupError || passwordValidationError;
+
+  const clearError = () => {
+    setPasswordValidationError("");
+    clearLoginError();
+    clearSignupError();
+  };
 
   const isValidPassword = () => {
     if (password.length < 8) {
@@ -156,15 +168,6 @@ function AuthDialogForm({ loginView }: { loginView: boolean }) {
     return true;
   };
 
-  const { login, error: loginError, clearLoginError } = useLogin();
-  const { signup, error: signupError, clearSignupError } = useSignup();
-  const clearError = () => {
-    setPasswordValidationError("");
-    loginView ? clearLoginError() : clearSignupError();
-  };
-
-  const error = loginError || signupError || passwordValidationError;
-
   const handleContinue = (e: SyntheticEvent) => {
     e.preventDefault();
     clearError();
@@ -174,6 +177,10 @@ function AuthDialogForm({ loginView }: { loginView: boolean }) {
       signup(email, password);
     }
   };
+
+  useEffect(() => {
+    clearError();
+  }, [loginView]);
 
   return (
     <form

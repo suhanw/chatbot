@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 
-import { TOP_NAV_HEIGHT } from "../../layout/TopNav";
+import { TOP_NAV_HEIGHT } from "../layout/TopNav";
 import ConversationInput from "./ConversationInput";
 import ConversationHistory from "./ConversationHistory";
 

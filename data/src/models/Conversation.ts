@@ -11,13 +11,17 @@ export interface IConversation {
   title: string;
   messages: IMessage[];
   user: IUser;
+  updatedAt?: Date;
 }
 
-const conversationSchema = new Schema<IConversation>({
-  title: { type: String, required: true },
-  messages: [{ role: String, content: String }],
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-});
+const conversationSchema = new Schema<IConversation>(
+  {
+    title: { type: String, required: true },
+    messages: [{ role: String, content: String }],
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  },
+  { timestamps: true }
+);
 
 export const Conversation = model<IConversation>(
   "Conversation",

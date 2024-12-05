@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { authReducer } from "./auth";
-
+import { conversationsReducer } from "./conversations";
 // interface IState {
 //   data: {
 //     auth: IResponseUser;
@@ -22,6 +22,7 @@ import { authReducer } from "./auth";
 
 const dataReducer = combineReducers({
   auth: authReducer,
+  conversations: conversationsReducer,
 });
 
 const uiReducer = combineReducers({

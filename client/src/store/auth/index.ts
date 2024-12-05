@@ -1,14 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSlice } from "@reduxjs/toolkit";
 import { getCurrentUserApi, loginApi, signupApi } from "../../api/auth";
 
 interface IAuthState {
   currentUser: { email: string; password: string } | null;
-  error: string | null;
 }
 
-const initialState: IAuthState = { currentUser: null, error: null };
+const initialState: IAuthState = { currentUser: null };
 
 const authSlice = createSlice({
   name: "auth",
@@ -19,43 +18,51 @@ const authSlice = createSlice({
     },
     getAuthError: (state, action) => {
       state.currentUser = null;
-      state.error = action.payload;
-    },
-    clearAuthError: (state) => {
-      state.error = null;
     },
   },
 });
 
-export const { getCurrentUserSuccess, getAuthError, clearAuthError } =
-  authSlice.actions;
+export const { getCurrentUserSuccess, getAuthError } = authSlice.actions;
+
 export const authReducer = authSlice.reducer;
 
-export function useCurrentUser() {
+/** REACT HOOKS */
+
+export function useGetCurrentUser() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.data.auth);
 
+  const getCurrentUser = async () => {
+    try {
+      const response = await getCurrentUserApi();
+      dispatch(getCurrentUserSuccess(response.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    getCurrentUserApi()
-      .then((response) => dispatch(getCurrentUserSuccess(response.data)))
-      .catch((error) => dispatch(getAuthError(error)));
+    getCurrentUser();
   }, []);
 
-  return currentUser;
+  return { getCurrentUser, currentUser, isLoggedIn: Boolean(currentUser) };
 }
 
 export function useLogin() {
   const dispatch = useDispatch();
-  const { error } = useSelector((state: any) => state.data.auth);
+  const [error, setError] = useState<any>(null);
 
   const login = (email: string, password: string) => {
     loginApi(email, password)
       .then((response) => dispatch(getCurrentUserSuccess(response.data)))
-      .catch((error) => dispatch(getAuthError(error)));
+      .catch((error) => {
+        dispatch(getAuthError(error));
+        setError(error);
+      });
   };
 
   const clearLoginError = () => {
-    dispatch(clearAuthError());
+    setError(null);
   };
 
   return { login, error, clearLoginError };
@@ -63,17 +70,25 @@ export function useLogin() {
 
 export function useSignup() {
   const dispatch = useDispatch();
-  const { error } = useSelector((state: any) => state.data.auth);
+  const [error, setError] = useState<any>(null);
 
   const signup = (email: string, password: string) => {
     signupApi(email, password)
       .then((response) => dispatch(getCurrentUserSuccess(response.data)))
-      .catch((error) => dispatch(getAuthError(error)));
+      .catch((error) => {
+        dispatch(getAuthError(error));
+        setError(error);
+      });
   };
 
   const clearSignupError = () => {
-    dispatch(clearAuthError());
+    setError(null);
   };
 
   return { signup, error, clearSignupError };
+}
+
+export function useCurrentUser() {
+  const currentUser = useSelector((state: any) => state.data.auth.currentUser);
+  return { currentUser, isLoggedIn: Boolean(currentUser) };
 }
