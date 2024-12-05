@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -35,20 +36,17 @@ function ConversationHistory() {
         },
         { id: "3", role: "user", content: "How are you?" },
         { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
-        { id: "4", role: "assistant", content: "I'm good, thanks!" },
+        { id: "5", role: "assistant", content: "I'm good, thanks!" },
+        { id: "6", role: "assistant", content: "I'm good, thanks!" },
+        { id: "7", role: "assistant", content: "I'm good, thanks!" },
+        { id: "8", role: "assistant", content: "I'm good, thanks!" },
+        { id: "9", role: "assistant", content: "I'm good, thanks!" },
+        { id: "10", role: "assistant", content: "I'm good, thanks!" },
+        { id: "11", role: "assistant", content: "I'm good, thanks!" },
+        { id: "12", role: "assistant", content: "I'm good, thanks!" },
+        { id: "13", role: "assistant", content: "I'm good, thanks!" },
       ].map(({ id, role, content }) => (
-        <>
+        <Fragment key={id}>
           {role === "user" ? (
             <Box
               sx={{
@@ -80,7 +78,7 @@ function ConversationHistory() {
               <Typography>{content}</Typography>
             </Box>
           )}
-        </>
+        </Fragment>
       ))}
     </Box>
   );

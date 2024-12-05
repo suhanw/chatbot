@@ -118,6 +118,6 @@ export class Conversations {
 
   handleError: ErrorRequestHandler = (err, req, res, next) => {
     console.error(err);
-    res.status(err.status || 500).json({ error: err.message });
+    res.status(err.status || 500).send(err.message);
   };
 }

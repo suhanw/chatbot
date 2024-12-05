@@ -11,12 +11,15 @@ import AuthDialog from "./auth/AuthDialog";
 import ConversationToolbar from "./conversations/ConversationToolbar";
 import ConversationPicker from "./conversations/ConversationPicker";
 import Conversation from "./conversations/Conversation";
+import { useCurrentUser } from "../store/auth";
 
 function App() {
   const theme = useTheme();
+  const currentUser = useCurrentUser();
+  
   return (
     <Box>
-      <AuthDialog />
+      {!currentUser && <AuthDialog />}
       <TopNav>
         <MenuIcon fontSize="medium" />
         <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>S</Avatar>

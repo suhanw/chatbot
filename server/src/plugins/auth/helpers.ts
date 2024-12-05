@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { promisify } from "node:util";
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 
 const hashPromise = promisify(crypto.pbkdf2);
 
@@ -27,11 +27,7 @@ export const matchPassword = async (
   return crypto.timingSafeEqual(correctPassword, hashedPassword);
 };
 
-export const requireLogin = (
-  req: Request,
-  _: Response,
-  next: NextFunction
-) => {
+export const requireLogin: RequestHandler = (req, _, next) => {
   if (!req.session.user) {
     throw {
       status: 401,

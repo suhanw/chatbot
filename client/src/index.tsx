@@ -1,9 +1,11 @@
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 import { red } from "@mui/material/colors";
 import CssBaseline from "@mui/material/CssBaseline";
 import App from "./components/App";
+import { store } from "./store";
 
 const theme = createTheme({
   // cssVariables: true,
@@ -25,6 +27,8 @@ const root = createRoot(container!);
 root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </ThemeProvider>
 );

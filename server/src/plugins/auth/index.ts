@@ -99,6 +99,6 @@ export class Auth {
     console.error(err);
     console.log("Destroying session");
     req.session.destroy(console.error);
-    res.status(err.status || 500).json({ error: err.message });
+    res.status(err.status || 500).send(err.message);
   };
 }

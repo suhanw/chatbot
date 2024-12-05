@@ -15,11 +15,17 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 
+import { useLogin } from "../../store/auth";
+
 function AuthDialog() {
   const theme = useTheme();
   const [loginView, setLoginView] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, error } = useLogin();
+  const handleLogin = () => login(email, password);
 
   return (
     <Dialog open fullWidth maxWidth="xs">
@@ -48,6 +54,8 @@ function AuthDialog() {
         }}
       >
         <TextField
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           label="Email"
           variant="outlined"
           required
@@ -58,6 +66,8 @@ function AuthDialog() {
             Password
           </InputLabel>
           <OutlinedInput
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             id="password"
             type={showPassword ? "text" : "password"}
             endAdornment={
@@ -75,7 +85,20 @@ function AuthDialog() {
             }
           />
         </FormControl>
-        <Button variant="contained" size="large" sx={{ marginTop: "10px" }}>
+        <FormHelperText
+          error={!!error}
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          {error}
+        </FormHelperText>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ marginTop: "10px" }}
+          onClick={handleLogin}
+        >
           Continue
         </Button>
 
@@ -95,14 +118,14 @@ function AuthDialog() {
         >
           {loginView ? (
             <>
-              <div>Don't have an account?</div>
+              <span>Don't have an account?</span>
               <Button onClick={() => setLoginView(false)} variant="text">
                 Sign up
               </Button>
             </>
           ) : (
             <>
-              <div>Already have an account?</div>
+              <span>Already have an account?</span>
               <Button onClick={() => setLoginView(true)} variant="text">
                 Log in
               </Button>
